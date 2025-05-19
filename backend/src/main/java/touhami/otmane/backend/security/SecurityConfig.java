@@ -61,9 +61,17 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(rq -> rq.requestMatchers("/auth/login/**").permitAll())
-                .authorizeHttpRequests(rq -> rq.anyRequest().authenticated())
-                .oauth2ResourceServer(oa -> oa.jwt(Customizer.withDefaults()))
+                .authorizeHttpRequests(rq -> rq
+                        .requestMatchers(
+                                "/auth/login/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/api-docs",
+                                "/api-docs/swagger-config"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(oa -> oa.jwt(Customizer.withDefaults())) // Configure JWT Resource Server
                 .build();
     }
 
@@ -87,13 +95,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource(){
-        CorsConfiguration corsConfiguration=new CorsConfiguration();
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");
-        UrlBasedCorsConfigurationSource source=new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**",corsConfiguration);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
 }
