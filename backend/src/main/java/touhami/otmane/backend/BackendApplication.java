@@ -75,18 +75,17 @@ public class BackendApplication {
                 creditRepository.save(ci1);
                 System.out.println("Saved credit immobilier: " + ci1.getId());
 
-                // 3. Create Credits for Client 2 (Bob Martin)
                 // Credit Professionnel
                 CreditProfessionnel cpro1 = new CreditProfessionnel();
                 cpro1.setMotif("Acquisition de matériel");
                 cpro1.setRaisonSocialeEnterprise("Bob's Plumbing Ltd.");
                 cpro1.setDateDemande(LocalDate.now().minusMonths(3));
-                cpro1.setStatut(StatutCredit.EN_COURS); // Still under review
-                cpro1.setDateAcceptation(null); // Not accepted yet
+                cpro1.setStatut(StatutCredit.EN_COURS);
+                cpro1.setDateAcceptation(null);
                 cpro1.setMontant(new BigDecimal("50000.00"));
-                cpro1.setDuree(84); // 84 months (7 years)
+                cpro1.setDuree(84);
                 cpro1.setTauxInteret(new BigDecimal("0.03"));
-                cpro1.setClient(client2); // Set the relationship
+                cpro1.setClient(client2);
                 creditRepository.save(cpro1);
                 System.out.println("Saved credit professionnel: " + cpro1.getId());
 
@@ -105,16 +104,13 @@ public class BackendApplication {
 
 
                 // 4. Create Remboursements for the accepted credits
-
-                // Remboursements for Credit Personnel (cp1)
-                // Assuming a simple fixed monthly payment calculation (for test data only)
-                BigDecimal monthlyPaymentCp1 = new BigDecimal("350.00"); // Simplified calculation
-                for (int i = 1; i <= 6; i++) { // Add 6 monthly payments
+                BigDecimal monthlyPaymentCp1 = new BigDecimal("350.00");
+                for (int i = 1; i <= 6; i++) {
                     Remboursement r = new Remboursement();
                     r.setDate(cp1.getDateAcceptation().plusMonths(i));
                     r.setMontant(monthlyPaymentCp1);
                     r.setType(TypeRemboursement.MENSUALITE);
-                    r.setCredit(cp1); // Set the relationship
+                    r.setCredit(cp1);
                     remboursementRepository.save(r);
                     System.out.println("Saved remboursement for cp1: " + r.getId());
                 }
@@ -130,8 +126,8 @@ public class BackendApplication {
 
 
                 // Remboursements for Credit Immobilier (ci1)
-                BigDecimal monthlyPaymentCi1 = new BigDecimal("1100.00"); // Simplified
-                for (int i = 1; i <= 12; i++) { // Add 12 monthly payments
+                BigDecimal monthlyPaymentCi1 = new BigDecimal("1100.00");
+                for (int i = 1; i <= 12; i++) {
                     Remboursement r = new Remboursement();
                     r.setDate(ci1.getDateAcceptation().plusMonths(i));
                     r.setMontant(monthlyPaymentCi1);
@@ -140,9 +136,6 @@ public class BackendApplication {
                     remboursementRepository.save(r);
                     System.out.println("Saved remboursement for ci1: " + r.getId());
                 }
-
-                // No reimbursements for cpro1 or cp2 as they are not accepted or rejected.
-
             } else {
                 System.out.println("No clients found, skipping credit and remboursement creation.");
             }
