@@ -1,0 +1,56 @@
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header">
+      <h2>My Credit Applications</h2>
+    </div>
+    <div class="card-body">
+      <div *ngIf="isLoading" class="text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p>Loading your credits...</p>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+
+      <div *ngIf="!isLoading && !errorMessage && credits.length === 0" class="alert alert-info">
+        You have not applied for any credits yet.
+        <a routerLink="/client/apply-credit" class="alert-link">Apply for one now!</a>
+      </div>
+
+      <div *ngIf="!isLoading && !errorMessage && credits.length > 0" class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Amount</th>
+              <th>Duration (Months)</th>
+              <th>Interest Rate</th>
+              <th>Date of Application</th>
+              <th>Status</th>
+              <th>Type</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let credit of credits">
+              <td>{{ credit.id }}</td>
+              <td>{{ credit.montant | currency:'EUR':'symbol' }}</td> <!-- Adjust currency as needed -->
+              <td>{{ credit.duree }}</td>
+              <td>{{ credit.tauxInteret | percent:'1.2-2' }}</td>
+              <td>{{ credit.dateDemande | date:'dd/MM/yyyy' }}</td>
+              <td><span class="{{ getStatusBadgeClass(credit.statut) }}">{{ credit.statut }}</span></td>
+              <td>{{ credit.type }}</td>
+              <td>
+                <!-- Placeholder for a details view/modal or link -->
+                <button class="btn btn-sm btn-info">View</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div> 

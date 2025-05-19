@@ -1,0 +1,43 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">Bank App</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item" *ngIf="authService.isAuthenticated()">
+          <a class="nav-link" routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a>
+        </li>
+        <li class="nav-item" *ngIf="authService.isAuthenticated() && hasRole('ROLE_ADMIN')">
+          <a class="nav-link" routerLink="/admin/clients" routerLinkActive="active">Clients (Admin)</a>
+        </li>
+        <li class="nav-item" *ngIf="authService.isAuthenticated() && hasRole('ROLE_EMPLOYE')">
+          <a class="nav-link" routerLink="/employee/clients" routerLinkActive="active">Clients (Emp)</a>
+        </li>
+        <li class="nav-item" *ngIf="authService.isAuthenticated() && (hasRole('ROLE_ADMIN') || hasRole('ROLE_EMPLOYE'))">
+          <a class="nav-link" routerLink="/credits/management" routerLinkActive="active">Credits</a>
+        </li>
+        <li class="nav-item" *ngIf="authService.isAuthenticated() && hasRole('ROLE_CLIENT')">
+          <a class="nav-link" routerLink="/client/credits/apply" routerLinkActive="active">Apply for Credit</a>
+        </li>
+        <li class="nav-item" *ngIf="authService.isAuthenticated() && hasRole('ROLE_CLIENT')">
+          <a class="nav-link" routerLink="/client/my-credits" routerLinkActive="active">My Credits</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item" *ngIf="!authService.isAuthenticated()">
+          <a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a>
+        </li>
+        <li class="nav-item dropdown" *ngIf="authService.isAuthenticated()">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ authService.getUserName() }} ({{ authService.getRoles().join(', ') }})
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownUser">
+            <li><a class="dropdown-item" (click)="handleLogout()" href="#">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav> 
