@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import touhami.otmane.backend.dtos.CreditDTO;
 import touhami.otmane.backend.dtos.RemboursementDTO;
@@ -24,12 +25,14 @@ public class CreditRestController {
     private CreditManagementService creditService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_EMPLOYE')")
     public List<CreditDTO> getAllCredits() {
         log.info("Received request to get all credits");
         return creditService.getAllCredits();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_EMPLOYE') or hasAuthority('ROLE_CLIENT')")
     public ResponseEntity<CreditDTO> getCreditById(@PathVariable Long id) {
         log.info("Received request to get credit by ID: {}", id);
         try {
@@ -42,6 +45,7 @@ public class CreditRestController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CLIENT') or hasAuthority('ROLE_EMPLOYE')")
     public ResponseEntity<CreditDTO> createCredit(@Valid @RequestBody CreditDTO creditDTO) {
         log.info("Received request to create credit for client ID: {}", creditDTO.getClientId());
         if (creditDTO.getId() != null) {
@@ -64,6 +68,7 @@ public class CreditRestController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_EMPLOYE')")
     public ResponseEntity<CreditDTO> updateCredit(@PathVariable Long id, @Valid @RequestBody CreditDTO creditDTO) {
         log.info("Received request to update credit ID: {}", id);
         if (creditDTO.getId() == null || !creditDTO.getId().equals(id)) {
@@ -90,6 +95,7 @@ public class CreditRestController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteCredit(@PathVariable Long id) {
         log.info("Received request to delete credit by ID: {}", id);
         try {
@@ -105,6 +111,7 @@ public class CreditRestController {
     }
 
     @PutMapping("/{id}/accept")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_EMPLOYE')")
     public ResponseEntity<CreditDTO> acceptCredit(@PathVariable Long id) {
         log.info("Received request to accept credit ID: {}", id);
         try {
@@ -120,6 +127,7 @@ public class CreditRestController {
     }
 
     @PutMapping("/{id}/reject")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_EMPLOYE')")
     public ResponseEntity<CreditDTO> rejectCredit(@PathVariable Long id) {
         log.info("Received request to reject credit ID: {}", id);
         try {
@@ -136,6 +144,7 @@ public class CreditRestController {
 
 
     @GetMapping("/status/{status}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_EMPLOYE')")
     public List<CreditDTO> getCreditsByStatus(@PathVariable StatutCredit status) {
         log.info("Received request to get credits by status: {}", status);
         return creditService.getCreditsByStatus(status);
@@ -143,6 +152,7 @@ public class CreditRestController {
 
 
     @GetMapping("/{creditId}/remboursements")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_EMPLOYE') or hasAuthority('ROLE_CLIENT')")
     public ResponseEntity<List<RemboursementDTO>> getRemboursementsByCredit(@PathVariable Long creditId) {
         log.info("Received request to get remboursements for credit ID: {}", creditId);
         try {

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import touhami.otmane.backend.dtos.ClientDTO;
 import touhami.otmane.backend.dtos.CreditDTO;
@@ -22,12 +23,14 @@ public class ClientRestController {
     private CreditManagementService creditService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_EMPLOYE')")
     public List<ClientDTO> getAllClients() {
         log.info("Received request to get all clients");
         return creditService.getAllClients();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_EMPLOYE')")
     public ResponseEntity<ClientDTO> getClientById(@PathVariable Long id) {
         log.info("Received request to get client by ID: {}", id);
         try {
@@ -40,6 +43,7 @@ public class ClientRestController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_EMPLOYE')")
     public ResponseEntity<ClientDTO> createClient(@Valid @RequestBody ClientDTO clientDTO) {
         log.info("Received request to create client: {}", clientDTO.getEmail());
         if (clientDTO.getId() != null) {
@@ -51,6 +55,7 @@ public class ClientRestController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_EMPLOYE')")
     public ResponseEntity<ClientDTO> updateClient(@PathVariable Long id, @Valid @RequestBody ClientDTO clientDTO) {
         log.info("Received request to update client ID: {}", id);
         if (clientDTO.getId() == null || !clientDTO.getId().equals(id)) {
@@ -72,6 +77,7 @@ public class ClientRestController {
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
         log.info("Received request to delete client by ID: {}", id);
         try {
@@ -87,12 +93,14 @@ public class ClientRestController {
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_EMPLOYE')")
     public List<ClientDTO> searchClients(@RequestParam(name = "keyword", defaultValue = "") String keyword) {
         log.info("Received request to search clients with keyword: {}", keyword);
         return creditService.searchClients(keyword);
     }
 
     @GetMapping("/{clientId}/credits")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_EMPLOYE')")
     public ResponseEntity<List<CreditDTO>> getCreditsByClient(@PathVariable Long clientId) {
         log.info("Received request to get credits for client ID: {}", clientId);
         try {

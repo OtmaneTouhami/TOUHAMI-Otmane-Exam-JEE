@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import touhami.otmane.backend.dtos.RemboursementDTO;
 import touhami.otmane.backend.exceptions.CreditNotFoundException;
@@ -19,6 +20,7 @@ public class RemboursementRestController {
     private CreditManagementService creditService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_EMPLOYE')")
     public ResponseEntity<RemboursementDTO> addRemboursement(@Valid @RequestBody RemboursementDTO remboursementDTO) {
         log.info("Received request to add remboursement for credit ID: {}", remboursementDTO.getCreditId());
         if (remboursementDTO.getId() != null) {
